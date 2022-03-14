@@ -8,15 +8,9 @@ namespace ForestGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Player _player;
+        public Player _player;
+        private Background _background;
 
-        // Layer textures
-        private Texture2D _sky;
-        private Texture2D _clouds;
-        private Texture2D _mountain;
-        private Texture2D _hill;
-        private Texture2D _ground;
-        private Texture2D _grass;
 
 
         public ForestGame()
@@ -33,6 +27,7 @@ namespace ForestGame
         protected override void Initialize()
         {
             _player = new Player();
+            _background = new Background();
 
             base.Initialize();
         }
@@ -41,14 +36,7 @@ namespace ForestGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _player.LoadContent(Content);
-
-            //Load background texture.
-            _sky = Content.Load<Texture2D>("sky_layer");
-            _clouds = Content.Load<Texture2D>("cloud_layer");
-            _mountain = Content.Load<Texture2D>("mountain_layer");
-            _hill = Content.Load<Texture2D>("hill_layer");
-            _ground = Content.Load<Texture2D>("ground_layer");
-            _grass = Content.Load<Texture2D>("grass_layer");
+            _background.LoadContent(Content);
         }
 
         /// <summary>
@@ -62,6 +50,7 @@ namespace ForestGame
 
             _player.Update(gameTime);
 
+            _background.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -71,73 +60,11 @@ namespace ForestGame
         /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
+           // _spriteBatch.Begin();
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            float playerX = MathHelper.Clamp(_player.Position.X, 300, 13600);
-
-            float offsetX = 300 - playerX;
-
-            Matrix transform;
-
-            // Background Sky
-            transform = Matrix.CreateTranslation(offsetX * 0.333f, 0, 0);
-            _spriteBatch.Begin(transformMatrix: transform);
-            //_spriteBatch.Draw(_sky, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_sky,
-               new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-               new Rectangle(0, 0, 272, 160),
-               Color.White);
-            _spriteBatch.End();
-
-
-
-
-            //Mountain Layer
-            transform = Matrix.CreateTranslation(offsetX * 0.555f, 0, 0);
-            _spriteBatch.Begin(transformMatrix: transform);
-            // _spriteBatch.Draw(_mountain, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_mountain,
-               new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-               new Rectangle(0, 0, 272, 160),
-               Color.White);
-            _spriteBatch.End();
-
-            //Hill Layer
-            transform = Matrix.CreateTranslation(offsetX * 0.666f, 0, 0);
-            _spriteBatch.Begin(transformMatrix: transform);
-            //_spriteBatch.Draw(_hill, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_hill,
-              new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-              new Rectangle(0, 0, 272, 160),
-             Color.White);
-            _spriteBatch.End();
-
-
-            //Ground Layer
-            transform = Matrix.CreateTranslation(offsetX, 0, 0);
-
-            _spriteBatch.Begin(transformMatrix: transform);
-            // _spriteBatch.Draw(_ground, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_ground,
-                new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-                 new Rectangle(0, 0, 272, 160),
-                 Color.White);
-            _player.Draw(gameTime, _spriteBatch);
-
-            _spriteBatch.End();
-
-            //Grass layer
-            transform = Matrix.CreateTranslation(offsetX, 0, 0);
-
-            _spriteBatch.Begin(transformMatrix: transform);
-            // _spriteBatch.Draw(_grass, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(_grass,
-                  new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-                  new Rectangle(0, 0, 272, 160),
-               Color.White);
-            _spriteBatch.End();
-
-
+            //_player.Draw(gameTime, _spriteBatch);
+             _background.Draw(gameTime, _spriteBatch, _player);
+           //_spriteBatch.End();
             base.Draw(gameTime);
         }
     }

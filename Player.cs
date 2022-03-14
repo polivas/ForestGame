@@ -10,12 +10,25 @@ using Microsoft.Xna.Framework.Content;
 
 namespace ForestGame
 {
-    class Player
+    public enum TextureMode
+    {
+        idle = 0,
+        Right = 2,
+        Left = 2,
+        Attack = 3
+    }
+
+    public class Player
     {
         // The texture atlas for Mage Character
         private Texture2D _texture;
 
-        // The bounds of hte helicopter within the texture atlas
+        /// <summary>
+        /// the direction of the hunter
+        /// </summary>
+        public TextureMode TextureMode;
+
+        // The bounds of the player within the texture atlas
         private Rectangle _playerBounds = new Rectangle(0,192,32,32);
 
         // The position of the player
@@ -27,12 +40,33 @@ namespace ForestGame
         public Vector2 Position => _position;
 
         /// <summary>
+        /// If button is being pressed
+        /// </summary>
+        private bool pressing = false;
+
+        /// <summary>
+        /// Timer for animation sequence
+        /// </summary>
+        private double animationTimer;
+
+        /// <summary>
+        /// Frame for animations
+        /// </summary>
+        private short animationFrame = 0;
+
+        /// <summary>
+        /// Checks if the player is flipped, to flip the drawn sprite
+        /// </summary>
+        public bool Flipped;
+
+        /// <summary>
         /// Loads the player texture atlas
         /// </summary>
         /// <param name="content">The ContentManager to use to load the content</param>
         public void LoadContent(ContentManager content)
         {
-            _texture = content.Load<Texture2D>("wizard spritesheet calciumtrice");
+            _texture = content.Load<Texture2D>("wizard spritesheet");
+            _position.X = 25;
         }
 
         /// <summary>
@@ -41,13 +75,36 @@ namespace ForestGame
         /// <param name="gameTime">An object representing time in the game</param>
         public void Update(GameTime gameTime)
         {
+            var mouseState = Mouse.GetState();
+            var mousePosition = new Point(mouseState.X, mouseState.Y);
+
             var keyboardState = Keyboard.GetState();
             float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (keyboardState.IsKeyDown(Keys.Left)) _position -= Vector2.UnitX * 100 * t;
-            if (keyboardState.IsKeyDown(Keys.Right)) _position += Vector2.UnitX * 100 * t;
-            //if (keyboardState.IsKeyDown(Keys.Up)) _position -= Vector2.UnitY * 60 * t;
-           // if (keyboardState.IsKeyDown(Keys.Down)) _position += Vector2.UnitY * 120 * t;
+            pressing = false;
+
+
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+            {
+                _position += new Vector2(-1, 0);
+                TextureMode = TextureMode.Left;
+                Flipped = true;
+                pressing = true;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            {
+                _position += new Vector2(1, 0);
+                TextureMode = TextureMode.Right;
+                Flipped = false;
+                pressing = true;
+            }
+
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                TextureMode = TextureMode.Attack;
+                pressing = true;
+            }
 
         }
 
@@ -58,8 +115,34 @@ namespace ForestGame
         /// <param name="spriteBatch">The SpriteBatch to draw the player with</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _position.Y = 200;
-            spriteBatch.Draw(_texture, _position, _playerBounds, Color.White);
+            _position.Y = 220;
+
+            // spriteBatch.Draw(_texture, _position, _playerBounds, Color.White);
+
+            //Update animation Timer
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            //Update animation frame
+            if (animationTimer > 0.3)
+            {
+                animationFrame++;
+                if (animationFrame > 9) animationFrame = 0;
+                animationTimer -= 0.3;
+            }
+            if (animationTimer > 0.3) animationTimer -= 0.3;
+
+
+            var source = new Rectangle(animationFrame * 32, (int)TextureMode * 32, 32, 32);
+
+            SpriteEffects spriteEffects = (Flipped) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            spriteBatch.Draw(_texture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, spriteEffects, 0);
+            if (!pressing)
+            {
+                source = new Rectangle(animationFrame * 32, 0 * 32, 32, 32);
+                spriteBatch.Draw(_texture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, spriteEffects, 0);
+            }
+
         }
     }
 }
