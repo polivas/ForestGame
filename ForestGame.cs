@@ -4,13 +4,20 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ForestGame
 {
-    public class ForestGame : Game
+    public class ForestGame : Game, IParticleEmitter
     {
+        MouseState _priorMouse;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         public Player _player;
         private Background _background;
 
+        SpellParticleSystem _spells;
+        CloudParticleSystem _clouds;
+
+        public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
 
 
         public ForestGame()
@@ -18,6 +25,7 @@ namespace ForestGame
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = Constants.GAME_WIDTH;
             _graphics.PreferredBackBufferHeight = Constants.GAME_HEIGHT;
+            
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
@@ -29,6 +37,14 @@ namespace ForestGame
             _player = new Player();
             _background = new Background();
 
+
+            _clouds = new CloudParticleSystem(this, new Rectangle(-10, 115, 1500, 20));
+            Components.Add(_clouds);
+
+            _spells = new SpellParticleSystem(this, 10);
+            Components.Add(_spells);
+
+
             base.Initialize();
         }
 
@@ -37,6 +53,8 @@ namespace ForestGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _player.LoadContent(Content);
             _background.LoadContent(Content);
+
+
         }
 
         /// <summary>
@@ -45,12 +63,28 @@ namespace ForestGame
         /// <param name="gameTime">An object representing time in-game</param>
         protected override void Update(GameTime gameTime)
         {
+
+
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            MouseState currentMouse = Mouse.GetState();
+            Vector2 mousePosition = new Vector2(currentMouse.X, currentMouse.Y);
+
 
             _player.Update(gameTime);
 
             _background.Update(gameTime);
+
+            if (currentMouse.LeftButton == ButtonState.Pressed && _priorMouse.LeftButton == ButtonState.Released)
+            {
+                _spells.PlaceExplosion(mousePosition);
+            }
+
+            Velocity = mousePosition - Position;
+            Position = mousePosition;
+
             base.Update(gameTime);
         }
 
@@ -60,11 +94,13 @@ namespace ForestGame
         /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
-           // _spriteBatch.Begin();
+           
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            //_player.Draw(gameTime, _spriteBatch);
-             _background.Draw(gameTime, _spriteBatch, _player);
-           //_spriteBatch.End();
+
+
+            // _player.Draw(gameTime, _spriteBatch);
+            _background.Draw(gameTime, _spriteBatch, _player);
+      
             base.Draw(gameTime);
         }
     }

@@ -11,6 +11,8 @@ namespace ForestGame
 {
     public class Background
     {
+        public Texture2D texture;
+        public Rectangle rectangle;
 
         // Layer textures
         private Texture2D _sky;
@@ -20,6 +22,7 @@ namespace ForestGame
         private Texture2D _ground;
         private Texture2D _grass;
 
+
         // The position of the sprite?
         private Vector2 _position;
 
@@ -27,6 +30,9 @@ namespace ForestGame
         /// The current position
         /// </summary>
         public Vector2 Position => _position;
+
+
+
 
         public void LoadContent(ContentManager content)
         {
@@ -38,10 +44,14 @@ namespace ForestGame
             _hill = content.Load<Texture2D>("hill_layer");
             _ground = content.Load<Texture2D>("ground_layer");
             _grass = content.Load<Texture2D>("grass_layer");
+            
+
         }
 
         public void Update(GameTime gameTime)
         { 
+            
+
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Player player)
@@ -52,19 +62,24 @@ namespace ForestGame
 
             Matrix transform;
 
+
+            
             // Background Sky
             transform = Matrix.CreateTranslation(offsetX * 0.333f, 0, 0);
-            spriteBatch.Begin(transformMatrix: transform);
+
+            spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
             spriteBatch.Draw(_sky,
                new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
                new Rectangle(0, 0, 272, 160),
                Color.White);
+
             spriteBatch.End();
+            
 
 
             //Mountain Layer
             transform = Matrix.CreateTranslation(offsetX * 0.555f, 0, 0);
-            spriteBatch.Begin(transformMatrix: transform);
+            spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
             spriteBatch.Draw(_mountain,
                new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
                new Rectangle(0, 0, 272, 160),
@@ -73,7 +88,7 @@ namespace ForestGame
 
             //Hill Layer
             transform = Matrix.CreateTranslation(offsetX * 0.666f, 0, 0);
-            spriteBatch.Begin(transformMatrix: transform);
+            spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
             spriteBatch.Draw(_hill,
               new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
               new Rectangle(0, 0, 272, 160),
@@ -84,7 +99,7 @@ namespace ForestGame
             //Ground Layer
             transform = Matrix.CreateTranslation(offsetX, 0, 0);
 
-            spriteBatch.Begin(transformMatrix: transform);
+            spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
             spriteBatch.Draw(_ground,
                 new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
                  new Rectangle(0, 0, 272, 160),
@@ -96,7 +111,7 @@ namespace ForestGame
             //Grass layer
             transform = Matrix.CreateTranslation(offsetX * 1.25f, 0, 0);
 
-            spriteBatch.Begin(transformMatrix: transform);
+            spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
             // _spriteBatch.Draw(_grass, Vector2.Zero, Color.White);
             spriteBatch.Draw(_grass,
                   new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),

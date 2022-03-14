@@ -104,6 +104,9 @@ namespace ForestGame
             {
                 TextureMode = TextureMode.Attack;
                 pressing = true;
+            }else if (mouseState.LeftButton == ButtonState.Released)
+            {
+                TextureMode = TextureMode.Right;
             }
 
         }
@@ -136,10 +139,14 @@ namespace ForestGame
 
             SpriteEffects spriteEffects = (Flipped) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            spriteBatch.Draw(_texture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, spriteEffects, 0);
-            if (!pressing)
+            //spriteBatch.Draw(_texture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, spriteEffects, 0);
+           if(!pressing)
             {
                 source = new Rectangle(animationFrame * 32, 0 * 32, 32, 32);
+                spriteBatch.Draw(_texture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, spriteEffects, 0);
+            }
+            else
+            {
                 spriteBatch.Draw(_texture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, spriteEffects, 0);
             }
 
