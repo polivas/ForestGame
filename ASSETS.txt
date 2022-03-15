@@ -1,0 +1,13 @@
+﻿
+"Content/12_nebula_spritesheet.png" - created by CodeManu  of OpenGameArt.org (https://opengameart.org/content/free-pixel-effects-pack) and released under the public domain.
+
+"Content/eyeball_spritesheet.png" created by Calciumtrice of OpenGameArt.org (https://opengameart.org/content/forest-monsters) and released under CC-BY 3.0(https://creativecommons.org/licenses/by/3.0/),
+
+["Content/sky_layer.png" 
+"Content/cloud_layer.png"
+"Content/mountain_layer.png"
+"Content/hill_layer.png"
+"Content/grass_layer.png"]- created by OlegKrylov of OpenGameArt.org (https://opengameart.org/content/pixel-art-parallax-background) and released under CC-BY-SA 4.0 (https://creativecommons.org/licenses/by/4.0/), CC-BY 3.0(https://creativecommons.org/licenses/by/3.0/)
+
+
+"Content/wizard spritesheet calciumtrice.png" - created by Calciumtrice of OpenGameArt.org (https://opengameart.org/content/animated-wizard) and released under CC-BY 3.0(https://creativecommons.org/licenses/by/3.0/),

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using tainicom.Aether.Physics2D.Dynamics;
@@ -9,40 +10,49 @@ using tainicom.Aether.Physics2D.Dynamics.Contacts;
 
 namespace ForestGame
 {
-    public enum EyeDirection
+    public enum EyeballState
     {
-        Left = 0,
-        Up = 1,
-        Down = 2,
-        Right = 3,
+        Idle = 0,
+        Move = 1,
+        Blink = 2
     }
 
     class EyeballSprite
     {
-        private Texture2D texture;
+        Texture2D texture;
+        Vector2 origin;
+        float radius;
+        float scale;
+
         private double animationTimer;
         private short animationFrame = 0;
 
-        private bool dead;
-
-        float radius;
-        float scale;
-        Vector2 origin;
         Body body;
 
         /// <summary>
         /// the direction of the monster
         /// </summary>
-        public EyeDirection Direction;
+        public EyeballState State;
 
         /// <summary>
-        /// position of the monster
+        /// position of the eyeball
         /// </summary>
         public Vector2 Position;
 
         /// <summary>
+        /// A vector to the center of the eyeball
+        /// </summary>
+        public Vector2 Center { get; set; }
+
+        /// <summary>
+        /// A vector representing the velocity of the eyeball
+        /// </summary>
+        public Vector2 Velocity { get; set; }
+
+        /// <summary>
         /// A boolean indicating if this monster is colliding with an object
         public bool Colliding { get; protected set; }
+
 
         public EyeballSprite(float radius, Body body)
         {
@@ -50,8 +60,10 @@ namespace ForestGame
             this.radius = radius;
             scale = 1;
             origin = new Vector2(5, 5);
-            this.body.OnCollision += CollisionHandler;
+            //this.body.OnCollision += CollisionHandler;
         }
+
+
 
         /// <summary>
         /// Loads the eyeball's texture
@@ -68,6 +80,10 @@ namespace ForestGame
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
+
+            Center += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (Center.X < radius || Center.X > Constants.GAME_MAX_WIDTH - radius) Velocity *= -Vector2.UnitX;
+            if (Center.Y < radius || Center.Y > Constants.GAME_HEIGHT - radius) Velocity *= -Vector2.UnitY;
             Colliding = false;
         }
 
@@ -81,7 +97,7 @@ namespace ForestGame
         {
 
 
-            if (Colliding == false && dead == false)
+            if (Colliding == false)
             {
                 //Update animation Timer
                 animationTimer += gametime.ElapsedGameTime.TotalSeconds;
@@ -96,37 +112,29 @@ namespace ForestGame
 
                 if (this.body.LinearVelocity.X > 0)
                 {
-                    Direction = EyeDirection.Right;
+                    State = EyeballState.Move; //Right
+                    
                 }
                 if (this.body.LinearVelocity.X < 0)
                 {
-                    Direction = EyeDirection.Left;
+                    State = EyeballState.Move; //Left
+                }
+                if(this.body.LinearVelocity.X == 0 && this.body.LinearVelocity.Y == 0)
+                {
+                    State = EyeballState.Idle;
                 }
 
-
                 //Draw the sprite
-                var source = new Rectangle(animationFrame * 32, (int)Direction * 32, 32, 32);
-
-                spriteBatch.Draw(texture, body.Position, source, Color.White, 0f, origin, scale, SpriteEffects.None, 0);
-
+                var source = new Rectangle(animationFrame * 32, (int)State * 32, 32, 32);
+                spriteBatch.Draw(texture, Center, source, Color.White, 0, origin, scale, SpriteEffects.None, 0);
             }
         }
+        
 
 
         //Is checking if it has collided 
-        bool CollisionHandler(Fixture fixture, Fixture other, Contact contact)
+        public bool CollisionHandler()
         {
-            if (other.Body.BodyType == BodyType.Dynamic)
-            {
-                Colliding = true;
-                dead = true;
-                return true;
-            }
-            if (other.Body.BodyType == BodyType.Static)
-            {
-                Colliding = true;
-                return true;
-            }
 
             return false;
         }

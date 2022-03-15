@@ -33,7 +33,10 @@ namespace ForestGame
 
 
 
-
+        /// <summary>
+        /// Loads sprites into the game
+        /// </summary>
+        /// <param name="content">The content that is to be loaded fro monogame</param>
         public void LoadContent(ContentManager content)
         {
 
@@ -48,62 +51,87 @@ namespace ForestGame
 
         }
 
+        /// <summary>
+        /// Updates background
+        /// </summary>
+        /// <param name="gameTime">An object representing time in the game</param>
         public void Update(GameTime gameTime)
         { 
             
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime">An object representing time in the game</param>
+        /// <param name="spriteBatch">The SpriteBatch to draw the player with</param>
+        /// <param name="player">Player in the world</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Player player)
         {
-            float playerX = MathHelper.Clamp(player.Position.X, 300, 13600);
+            float playerX = MathHelper.Clamp(player.Position.X, 300, Constants.GAME_MAX_WIDTH);
 
             float offsetX = 300 - playerX;
 
             Matrix transform;
-
-
-            
+          
             // Background Sky
-            transform = Matrix.CreateTranslation(offsetX * 0.333f, 0, 0);
 
-            spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
-            spriteBatch.Draw(_sky,
-               new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-               new Rectangle(0, 0, 272, 160),
-               Color.White);
+            spriteBatch.Begin(samplerState: SamplerState.LinearWrap);
+
+            for (int i = 0; i < 3; i++)
+            {
+                spriteBatch.Draw(_sky,
+                  new Rectangle(i * Constants.GAME_WIDTH, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
+                  new Rectangle(0, 0, 272, 160),
+                 Color.White);
+            }
 
             spriteBatch.End();
-            
-
 
             //Mountain Layer
-            transform = Matrix.CreateTranslation(offsetX * 0.555f, 0, 0);
-            spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
-            spriteBatch.Draw(_mountain,
-               new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-               new Rectangle(0, 0, 272, 160),
-               Color.White);
+            transform = Matrix.CreateTranslation(offsetX * 0.250f, 0, 0);
+            spriteBatch.Begin(transformMatrix: transform);
+
+            for (int i = 0; i < 3; i++)
+            {
+                spriteBatch.Draw(_mountain,
+                  new Rectangle(i * Constants.GAME_WIDTH, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
+                  new Rectangle(0, 0, 272, 160),
+                 Color.White);
+            }
+
             spriteBatch.End();
 
             //Hill Layer
             transform = Matrix.CreateTranslation(offsetX * 0.666f, 0, 0);
             spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
-            spriteBatch.Draw(_hill,
-              new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-              new Rectangle(0, 0, 272, 160),
-             Color.White);
+
+            for(int i = 0; i < 4; i++)
+            {
+                spriteBatch.Draw(_hill,
+                  new Rectangle(i * Constants.GAME_WIDTH, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
+                  new Rectangle(0, 0, 272, 160),
+                 Color.White);
+            }
+
+
             spriteBatch.End();
 
 
             //Ground Layer
             transform = Matrix.CreateTranslation(offsetX, 0, 0);
 
-            spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
-            spriteBatch.Draw(_ground,
-                new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
-                 new Rectangle(0, 0, 272, 160),
+            spriteBatch.Begin(transformMatrix: transform);
+
+            for (int i = 0; i < 5; i++)
+            {
+                spriteBatch.Draw(_ground,
+                  new Rectangle(i * Constants.GAME_WIDTH, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
+                  new Rectangle(0, 0, 272, 160),
                  Color.White);
+            }
+
             player.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
@@ -113,10 +141,17 @@ namespace ForestGame
 
             spriteBatch.Begin(transformMatrix: transform, samplerState: SamplerState.LinearWrap);
             // _spriteBatch.Draw(_grass, Vector2.Zero, Color.White);
-            spriteBatch.Draw(_grass,
-                  new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
+
+            for (int i = 0; i < 6; i++)
+            {
+                spriteBatch.Draw(_grass,
+                  new Rectangle(i * Constants.GAME_WIDTH, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT),
                   new Rectangle(0, 0, 272, 160),
-               Color.White);
+                 Color.White);
+            }
+
+
+
             spriteBatch.End();
 
 
